@@ -1,0 +1,179 @@
+//font
+//===========================
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+
+$theme: (
+  font-color:#585858, 
+  font-family: ('Avenir', helvetica, arial, 'Noto Sans TC', sans-serif));
+
+
+
+
+/* Reset & Basics
+================================================== */
+// *{
+//   box-sizing: border-box;
+// }
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 100%;
+  border: 0;
+  // ↓ table's space will be changed in firefox
+
+  /* vertical-align: baseline; */
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// vue-element-reset
+.el-date-editor {
+  &.el-input {
+    width: 100%;
+  }
+
+  &--daterange {
+    &.el-input__inner {
+      width: 100%;
+    }
+  }
+}
+
+.el-picker-panel__body {
+  button {
+    width: fit-content(100%);
+    max-width: fit-content;
+  }
+
+  table td {
+    white-space: normal;
+    border-bottom: 0;
+  }
+}

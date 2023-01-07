@@ -1,0 +1,51 @@
+$white: #fff;
+$beige: #e1e1e1;
+$dark: #585858;
+$red: #f2646f;
+$green: #9abb68;
+$yello: #f4bf21;
+$gray: #dcdfe6;
+$gray-dark: #a5a5a5;
+
+
+
+
+
+$themes: (
+  light:(
+    primary-color:#5a94ff,
+    strong-color:#ff4081
+  ),
+  dark:(
+    primary-color:#ff4081, 
+  ),
+);
+
+// 把變數用css變數的方式output出去
+@each $name,
+  $map in $themes {
+  .theme-#{$name} {
+
+    @each $key,
+      $value in $map {
+      --#{$key}: #{$value};
+      --#{$key}-darken: #{darken($value, 5%)};
+      --#{$key}-darkenest: #{darken($value, 15%)};
+    }
+  }
+}
+
+
+
+//產生全域
+// @each $name,
+//   $map in $themes {
+//   :root {
+//     @each $key,
+//       $value in $map {
+//       --#{$key}: #{$value};
+//       --#{$key}-darken: #{darken($value, 5%)};
+//       --#{$key}-darkenest: #{darken($value, 15%)};
+//     }
+//   }
+// }

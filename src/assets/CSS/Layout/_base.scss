@@ -1,0 +1,204 @@
+$btn_config: (primary: (bg: map-get($primary_color, main),
+        color: map-get($primary_color, light),
+        border-color: transparent),
+    border: (bg: transparent,
+        color: map-get($primary_color, main),
+        border-color: map-get($primary_color, main)),
+    error: (bg: map-get($base_color, red),
+        color: map-get($base_color, white),
+        border-color: transparent),
+    pass: (bg: map-get($base_color, green),
+        color: map-get($base_color, white),
+        border-color: transparent),
+    cancel: (bg: map-get($base_color, gray_dark),
+        color: #e7e7e7,
+        border-color: transparent),
+    default: (bg: map-get($base_color, white),
+        color: map-get($primary_color, main),
+        border-color: transparent));
+
+$input_config: (primary: (bg: transparent,
+        color: map-get($base_color, dark),
+        border-color: map-get($primary_color, main),
+        hover-border-color: map-get($primary_color, main)),
+    el-ment:(bg: transparent,
+        color: map-get($base_color, dark),
+        border-color:#DCDFE6,
+        hover-border-color:#ccc),
+    border: (bg: transparent,
+        color: map-get($primary_color, main),
+        border-color: map-get($base_color, gray),
+        hover-border-color: map-get($primary_color, main),
+    ),
+    error: (bg: map-get($base_color, red),
+        color: map-get($base_color, white),
+        hover-border-color: map-get($primary_color, main),
+        border-color: transparent),
+    default: (bg: transparent,
+        color: map-get($base_color, dark),
+        border-color: transparent,
+        hover-border-color: map-get($primary_color, main)),
+    white:(bg: #fff,
+        color: map-get($base_color, dark),
+        border-color: transparent,
+        hover-border-color: map-get($primary_color, main)));
+
+$bg_config:(white:(bg: map-get($base_color, white)),
+    dark:(bg: map-get($base_color, dark)),
+    // beige:(bg: map-get($base_color, beige),
+    // )
+);
+
+//Button架構
+@mixin btn_color($color, $bg, $border) {
+    @content;
+    background: $bg;
+    color: $color;
+    border-color: $border;
+    transition: all 0.3s ease;
+
+    //border
+    @if$bg==transparent {
+        &:hover {
+            background: $border;
+            color: map-get($base_color, white);
+            transition: all 0.3s ease;
+        }
+
+        &:active {
+            background: darken($border, 15%);
+        }
+    }
+
+    @else {
+        &:hover {
+            background: darken($bg, 15%);
+            transition: all 0.3s ease;
+        }
+
+        &:active {
+            background: darken($bg, 25%);
+        }
+    }
+}
+
+//Input架構
+@mixin input_color($color, $border, $hover_border, $bg: transparent) {
+    @content;
+    background: $bg;
+    color: $color;
+    // border-color: $border;
+    transition: all 0.3s ease;
+    transition: 0.3s;
+    border: 1px solid $border;
+    padding: 7px 5px;
+    border-radius: 5px;
+
+    &:focus {
+        transition: 0.3s;
+        border: 1px solid map-get($primary_color, main);
+    }
+
+    /*webkit  Firefox  IE10*/
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: lighten($color, 80%);
+      }
+    &::-webkit-input-placeholder {
+        color: lighten($color, 80%);
+    }
+
+    &::-moz-placeholder {
+        color: lighten($color, 80%);
+    }
+
+    &:-ms-input-placeholder {
+        color: lighten($color, 80%);
+    }
+
+    @if$bg==transparent {
+        &:hover {
+            border: 1px solid $hover_border;
+            transition: all 0.3s ease;
+        }
+
+        &:focus {
+            border: 1px solid $hover_border;
+            transition: all 0.3s ease;
+        }
+
+        &:active {
+            border: 1px solid $hover_border;
+        }
+    }
+
+    @else {
+        &:hover {
+            background: darken($bg, 10%);
+            transition: all 0.3s ease;
+        }
+
+        &:focus {
+            background: darken($bg, 20%);
+        }
+
+        &:active {
+            background: darken($bg, 25%);
+        }
+    }
+}
+
+//Bg架構
+@mixin bg_color($bg) {
+    background: $bg;
+}
+
+//迴圈
+@each $name,
+$value in $btn-config {
+    $color: map-get($value, color);
+    $bg: map-get($value, bg);
+    $border-color: map-get($value, border-color);
+
+
+    .btn_#{$name} {
+        @if $name=="border" {
+            border: 1px solid $border-color;
+        }
+
+        @include btn_color($color, $bg, $border-color);
+    }
+}
+
+@each $name,
+$value in $input_config {
+    $color: map-get($value, color);
+    $bg: map-get($value, bg);
+    $border-color: map-get($value, border-color);
+    $hover_border: map-get($value, hover-border-color);
+
+    .input_#{$name} {
+        @if $name=="primary" {
+            border: none;
+            transition: 0.3s;
+            border: 1px solid;
+            padding: 7px 5px;
+            border-radius: 5px;
+
+            &:focus {
+                transition: 0.3s;
+                border: 1px dashed;
+            }
+        }
+
+        @include input_color($color, $border-color, $hover_border, $bg);
+    }
+}
+
+@each $name,
+$value in $bg_config {
+    $bg: map-get($value, bg);
+
+    .bg_#{$name} {
+        @include bg_color($bg);
+    }
+}

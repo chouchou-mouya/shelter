@@ -1,0 +1,43 @@
+@mixin shadow($x, $y, $blurry, $inner, $color:rgba(0, 0, 0, 0.2)) {
+  box-shadow: $x $y $blurry $inner $color;
+
+}
+
+@mixin overflow($x:auto, $y:auto, $color:$gray) {
+  overflow-x: $x;
+  overflow-y: $y;
+
+  /* ====捲軸====== */
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color;
+    border-radius: 80px;
+  }
+
+  &::-webkit-scrollbar-track-piece {
+    background: transparent;
+  }
+
+  &:hover::-webkit-scrollbar-thumb {
+    background: $color;
+  }
+}
+
+@mixin placeholder($color:#999) {
+  /* webkit  Firefox  IE10 */
+  &::input-placeholder {
+    color: lighten($color, 20%);
+  }
+
+  &::placeholder {
+    color: lighten($color, 20%);
+  }
+
+  &:input-placeholder {
+    color: lighten($color, 20%);
+  }
+}

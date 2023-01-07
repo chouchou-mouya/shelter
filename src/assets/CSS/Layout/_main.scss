@@ -1,0 +1,212 @@
+* {
+  box-sizing: inherit;
+}
+
+body {
+  letter-spacing: 1px;
+  box-sizing: border-box;
+}
+
+/**
+*========flex===============
+*/
+.flex {
+  display: flex;
+
+  &.flex_between {
+    justify-content: space-between;
+  }
+
+  &.flex_center {
+    justify-content: center;
+  }
+
+  &.flex_align_center {
+    align-items: center;
+  }
+
+  &.flex_wrap {
+    flex-wrap: wrap;
+  }
+
+  &.flex_end {
+    justify-content: flex-end;
+  }
+}
+
+/**
+*========btn & input======
+*/
+
+
+
+button {
+  width: 100%;
+  font-size: 14px;
+  text-align: center;
+  white-space: nowrap;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  >i {
+    padding-right: 5px;
+  }
+}
+
+button+button {
+  margin-left: 5px;
+}
+
+input {
+  padding: 3px 5px;
+  width: 100%;
+  outline: none;
+}
+
+
+.btn {
+  padding: 5px 30px;
+  border-radius: 5px;
+  margin-bottom: 0;
+  cursor: pointer;
+
+  &.small {
+    padding: 5px 12px;
+    font-size: 14px;
+  }
+}
+
+.icon_btn {
+  padding: 5px 10px;
+  max-width: 50px;
+  border-radius: 5px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+
+
+
+/**
+    *===Contain box===========
+*/
+.glo-contain {
+  position: relative;
+  padding: 20px 30px;
+  box-sizing: border-box;
+
+  @include pad {
+    padding: 10px;
+  }
+
+  @include phone {
+    padding: 10px;
+  }
+
+  &__inner {
+    padding: 25px 0;
+
+    @include phone {
+      padding: 15px 0;
+    }
+  }
+
+  &__box {
+    padding: 20px 30px;
+    border-radius: 8px;
+
+    @include phone {
+      padding: 20px;
+    }
+  }
+
+  &__small {
+    padding: 15px 0;
+  }
+}
+
+.s_contain {
+  position: relative;
+  padding: 20px 30px 5px;
+
+  @include pad {
+    padding: 20px 10px 10px;
+  }
+
+  @include phone {
+    padding: 20px 10px 10px;
+  }
+}
+
+
+
+.must {
+  color: $red;
+}
+
+
+
+/**
+     * =========== table===========
+     */
+table {
+  width: 100%;
+  font-size: 14px;
+  text-align: left;
+  table-layout: fixed;
+
+  thead {
+    font-weight: bold;
+    background: #fff;
+  }
+
+  td,
+  th {
+    position: relative;
+    padding: 20px 10px;
+    border-bottom: 1px solid #e1e3ee;
+    border-right: none;
+  }
+
+  th {
+    white-space: nowrap;
+  }
+
+  td {
+    white-space: pre-line;
+  }
+
+  >tbody {
+    >tr {
+      &:hover {
+        background: #f8faff;
+      }
+    }
+  }
+
+  .text_center {
+    text-align: center;
+  }
+}
+
+/**
+     * =========== Other ===========
+     */
+.no_pointer {
+  pointer-events: none;
+}
+
+.disappear {
+  display: none;
+}
+
+
+img {
+  width: 100%;
+  max-width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
+}

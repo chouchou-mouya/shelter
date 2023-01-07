@@ -1,0 +1,22 @@
+$pc-media: 1200px;
+$pad-media: 1024px;
+$phone-media: 580px;
+// $phone-media: 480px;
+
+@mixin web {
+  @media (max-width: $pc-media) {
+    @content;
+  }
+}
+
+@mixin pad {
+  @media (max-width: $pad-media) {
+    @content;
+  }
+}
+
+@mixin phone {
+  @media (max-width: $phone-media) {
+    @content;
+  }
+}
