@@ -11,7 +11,7 @@
 
 <style lang="scss">
 .home {
-  background: #eee;
+  background: #f2f2f2;
   /* padding:30px; */
 }
 /* h1 {

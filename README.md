@@ -1,7 +1,10 @@
-# Vue 3 + Vite
-
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+# 進度紀錄
+* home
+    - 點擊item進入動物 detailed info
+* analzye
+    - 頁面構成
+    - 加上指標以及切換縣市項目
+    - 增加數據分析（待思考）ex 狗貓 縣市 累積數量...
+* All
+    - logo設計
+    - rwd注意
