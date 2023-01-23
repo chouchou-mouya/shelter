@@ -1,6 +1,6 @@
 <template>
   <div class="analyze">
-    <div class="date_picker">
+    <div class="date-picker">
       <el-date-picker
         v-model="date_range"
         type="monthrange"
@@ -12,15 +12,18 @@
         @change="changeDate"
       />
     </div>
-
-    <div class="bar-chart">
-      <!-- :ref="setBoxChart" -->
-      <LineChart
-        v-if="all_data.length !== 0"
-        :raw_data="all_data"
-        :stack_key="Object.keys(area_key)"
-      ></LineChart>
-    </div>
+    <Transition name="side-up" mode="out-in">
+      <LoadingItem v-if="page_loading"></LoadingItem>
+      <div v-else>
+        <div class="bar-chart">
+          <LineChart
+            v-if="all_data.length !== 0"
+            :raw_data="all_data"
+            :stack_key="Object.keys(area_key)"
+          ></LineChart>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -30,17 +33,40 @@
   z-index: 1;
   padding: 50px 30px;
   min-height: 100vh;
-  .date_picker {
+  .date-picker {
     position: relative;
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
+    margin-bottom: 10px;
+    div {
+      box-shadow: none;
+      &:hover {
+        box-shadow: none;
+      }
+    }
   }
   .bar-chart {
     width: 100%;
     background: #fff;
     padding: 30px;
     border-radius: 10px;
+  }
+  .side-up-enter-active,
+  .side-up-leave-active {
+    transition: all 0.25s ease-out;
+  }
+
+  .side-up-enter-from {
+    //item go entering
+    opacity: 0;
+    // transform: translateY(30px);
+  }
+
+  .side-up-leave-to {
+    // item go leaving
+    opacity: 0;
+    // transform: translateY(-30px);
   }
 }
 </style>
@@ -49,6 +75,7 @@ import { computed, inject, onMounted, reactive, ref } from "vue";
 import moment from "moment";
 import LineChart from "@/components/LineChart.vue";
 import { area } from "@/utils/list.js";
+import LoadingItem from "@/components/element/LoadingItem.vue";
 export default {
   name: "analyze-item",
 };
@@ -56,6 +83,7 @@ export default {
 <script setup>
 const $axios = inject("$axios");
 const all_data = ref([]);
+const page_loading = ref(false);
 const area_key = computed(() => {
   return area
     .map((el) => el.label)
@@ -95,6 +123,7 @@ const setBarData = (ll, animal_createtime, animal_area_pkid) => {
   return ll;
 };
 const getData = async () => {
+  page_loading.value = true;
   all_data.value = [];
   try {
     let { data } = await $axios.basic.getAnimalData();
@@ -144,6 +173,7 @@ const getData = async () => {
   } catch (error) {
     alert(error);
   }
+  page_loading.value = false;
 };
 const changeDate = (date) => {
   if (date) {
