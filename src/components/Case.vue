@@ -1,13 +1,9 @@
 <template>
-  <div class="case-item">
-    <div>
-      <div class="case-img">
-        <!-- :style="setPhoto" -->
-        <ProgressiveImage
-          v-if="props.data.album_file"
-          :src="props.data.album_file"
-        />
-        <div class="no-photo" v-else>
+  <div class="case">
+    <div class="case-photo">
+      <img v-if="props.data.album_file" :src="props.data.album_file" />
+      <div class="no-photo" v-else>
+        <div>
           <font-awesome-icon icon="paw" />
           <p>No Photo</p>
         </div>
@@ -24,15 +20,20 @@
             : "No Remark"
         }}
       </p>
+      <div class="case-info__date">
+        建立時間 {{ props.data["animal_createtime"] }}  更新時間 {{ props.data["animal_update"] }}
+      </div>
       <div class="detail">
-        <p>
-          {{ setDate }}
-        </p>
         <p>
           {{ props.data["shelter_name"] }}
         </p>
+        <p>
+          {{ props.data["shelter_address"] }}
+        </p>
+        <p>
+          {{ props.data["shelter_tel"] }}
+        </p>
       </div>
-
       <div
         class="tab-list"
         :style="setTabColor(tab.color)"
@@ -41,51 +42,33 @@
       >
         {{ tab.function }}
       </div>
-      <!-- {{ props.data }} -->
     </div>
   </div>
 </template>
 
 <style lang="scss">
-.case-item {
-  position: relative;
-  top: 0px;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 10px;
-  background: #fff;
-  .case-img {
-    overflow: hidden;
-    transition: 0.3s;
-    filter: saturate(90%);
-    border-radius: 10px;
-    position: relative;
-    width: 100%;
-    height: 220px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    img {
-      display: block;
-    }
+.case {
+  height: 500px;
+  @include overflow(auto, auto);
+  .case-photo {
+    max-width: 100%;
     .no-photo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translateY(-50%);
-      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      width: 100%;
+      height: 100px;
+      border: 1px solid #ccc;
+      //   transform: translateY(-50%);
+      //   transform: translateX(-50%);
       color: var(--strong-color);
-      text-align: center;
-    }
-    svg {
-      font-size: 50px;
-    }
-    p {
-      margin-top: 5px;
-      font-size: 13px;
+      > div {
+        text-align: center;
+        p {
+          margin: 5px 0;
+        }
+      }
     }
   }
   .case-info {
@@ -93,6 +76,13 @@
     h1 {
       font-size: 16px;
       font-weight: bold;
+    }
+    &__date{
+        display: flex;
+        justify-content: flex-end;
+        font-size: 12px;
+        color: $dark;
+        
     }
     > p {
       font-size: 13px;
@@ -102,13 +92,14 @@
       word-wrap: break-word;
     }
     .detail {
-      margin-bottom: 5px;
-      display: flex;
-      justify-content: flex-end;
+      margin: 5px 0;
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
       > p {
+        color: $dark;
         font-size: 12px;
-        color: $gray-dark;
-        margin: 0 5px;
+        margin: 5px 5px;
       }
     }
 
@@ -125,42 +116,26 @@
       color: #fff;
     }
   }
-  &:hover {
-    transition: 0.3s;
-    top: -5px;
-    @include shadow(5px, 20px, 15px, -10px);
-    .case-img {
-      transition: -webkit-filter 500ms linear;
-      filter: saturate(100%);
-    }
-    .hover-block {
-      transition: 0.3s;
-      top: 0;
-    }
-  }
 }
 </style>
+<script>
+import { Animal } from "@/utils/getAnimalDetail.js";
+import { computed, reactive, ref } from "vue";
+export default {
+  name: "case",
+};
+</script>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
-import { Animal } from "@/utils/getAnimalDetail.js";
-import { ProgressiveImage } from "vue-progressive-image";
-
+const props = defineProps({
+  data: Object,
+});
 const the_animal = reactive(new Animal(props.data));
-const props = defineProps({ data: Object });
 const setSex = computed(() => {
   return the_animal.setSex();
 });
 const setName = computed(() => {
   return the_animal.setName();
-});
-
-const setDate = computed(() => {
-  if (props.data["animal_update"]) {
-    return props.data["animal_update"];
-  } else {
-    return props.data["animal_createtime"];
-  }
 });
 
 const setAge = computed(() => {
@@ -185,7 +160,4 @@ const setTabColor = (bg) => {
   return `background:${bg}`;
 };
 
-onMounted(() => {
-  // console.log(myobject)
-});
 </script>

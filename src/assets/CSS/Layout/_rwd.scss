@@ -1,6 +1,7 @@
 $pc-media: 1200px;
 $pad-media: 1024px;
 $phone-media: 580px;
+$mini-phone-media: 580px;
 // $phone-media: 480px;
 
 @mixin web {
@@ -17,6 +18,12 @@ $phone-media: 580px;
 
 @mixin phone {
   @media (max-width: $phone-media) {
+    @content;
+  }
+}
+
+@mixin mini {
+  @media (max-width: $mini-phone-media) {
     @content;
   }
 }

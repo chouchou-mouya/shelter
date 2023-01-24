@@ -16,11 +16,15 @@
       <LoadingItem v-if="page_loading"></LoadingItem>
       <div v-else>
         <div class="bar-chart">
+          <h1>每月縣市新增數量圖</h1>
           <LineChart
-            v-if="all_data.length !== 0"
-            :raw_data="all_data"
+            v-if="line_chart_data.length !== 0"
+            :raw_data="line_chart_data"
             :stack_key="Object.keys(area_key)"
           ></LineChart>
+        </div>
+        <div>
+          <PieChart v-if="pie_chart_data.length !== 0" :raw_data="pie_chart_data"></PieChart>
         </div>
       </div>
     </Transition>
@@ -47,6 +51,11 @@
     }
   }
   .bar-chart {
+    h1 {
+      font-weight: bold;
+      font-size: 20px;
+      // color: var(--primary-color);
+    }
     width: 100%;
     background: #fff;
     padding: 30px;
@@ -74,15 +83,17 @@
 import { computed, inject, onMounted, reactive, ref } from "vue";
 import moment from "moment";
 import LineChart from "@/components/LineChart.vue";
-import { area } from "@/utils/list.js";
+import { area, sex } from "@/utils/list.js";
 import LoadingItem from "@/components/element/LoadingItem.vue";
+import PieChart from "@/components/PieChart.vue";
 export default {
   name: "analyze-item",
 };
 </script>
 <script setup>
 const $axios = inject("$axios");
-const all_data = ref([]);
+const line_chart_data = ref([]);
+const pie_chart_data = ref([]);
 const page_loading = ref(false);
 const area_key = computed(() => {
   return area
@@ -122,9 +133,84 @@ const setBarData = (ll, animal_createtime, animal_area_pkid) => {
   }
   return ll;
 };
+const setCountData = (data, minimumDate) => {
+  const chart_data = [];
+  data.forEach((element) => {
+    const { animal_area_pkid, animal_createtime } = element;
+    if (
+      moment(date_range.value[0]).isAfter(minimumDate) &&
+      moment(animal_createtime).isBetween(
+        date_range.value[0],
+        date_range.value[1]
+      )
+    ) {
+      const { label: loacal } = area.filter(
+        (a) => a.value == animal_area_pkid
+      )[0];
+      const month = moment(animal_createtime).format("YYYY-MM");
+      const index = chart_data.findIndex((d) => d.name == loacal);
+      if (index != -1) {
+        const inner_index = chart_data[index].data.findIndex(
+          (v) => v.date == month
+        );
+        if (inner_index != -1) {
+          chart_data[index].data[inner_index].value =
+            chart_data[index].data[inner_index].value + 1;
+        } else {
+          chart_data[index].data.push({ date: month, value: 1 });
+        }
+      } else {
+        //New Object
+        const obj = {
+          name: loacal,
+          data: [{ date: month, value: 1 }],
+        };
+        chart_data.push(obj);
+      }
+    }
+  });
+  return chart_data;
+};
+const setPieType = (data, minimumDate) => {
+  console.log(data, minimumDate);
+  const chart_data = [];
+  data.forEach((element) => {
+    const {  animal_createtime, animal_sex } = element;
+    if (
+      moment(date_range.value[0]).isAfter(minimumDate) &&
+      moment(animal_createtime).isBetween(
+        date_range.value[0],
+        date_range.value[1]
+      )
+    ) {
+      const { label: the_sex } = sex.filter((a) => a.value == animal_sex)[0];
+      const month = moment(animal_createtime).format("YYYY-MM");
+      const index = chart_data.findIndex((d) => d.name == the_sex);
+      if (index != -1) {
+        const inner_index = chart_data[index].data.findIndex(
+          (v) => v.date == month
+        );
+        if (inner_index != -1) {
+          chart_data[index].data[inner_index].value =
+            chart_data[index].data[inner_index].value + 1;
+        } else {
+          chart_data[index].data.push({ date: month, value: 1 });
+        }
+      } else {
+        //New Object
+        const obj = {
+          name: the_sex,
+          data: [{ date: month, value: 1 }],
+        };
+        chart_data.push(obj);
+      }
+    }
+  });
+  return chart_data;
+};
 const getData = async () => {
   page_loading.value = true;
-  all_data.value = [];
+  line_chart_data.value = [];
   try {
     let { data } = await $axios.basic.getAnimalData();
     data = data.sort(
@@ -134,42 +220,11 @@ const getData = async () => {
     const dates = data.map((e) => new Date(e["animal_createtime"]));
     let minimumDate = new Date(Math.min.apply(null, dates));
     minimumDate = moment(minimumDate).format("YYYY-MM-DD");
-    const chart_data = [];
-    data.forEach((element) => {
-      const { animal_area_pkid, animal_createtime } = element;
-      if (
-        moment(date_range.value[0]).isAfter(minimumDate) &&
-        moment(animal_createtime).isBetween(
-          date_range.value[0],
-          date_range.value[1]
-        )
-      ) {
-        const { label: loacal } = area.filter(
-          (a) => a.value == animal_area_pkid
-        )[0];
-        const month = moment(animal_createtime).format("YYYY-MM");
-        const index = chart_data.findIndex((d) => d.name == loacal);
-        if (index != -1) {
-          const inner_index = chart_data[index].data.findIndex(
-            (v) => v.date == month
-          );
-          if (inner_index != -1) {
-            chart_data[index].data[inner_index].value =
-              chart_data[index].data[inner_index].value + 1;
-          } else {
-            chart_data[index].data.push({ date: month, value: 1 });
-          }
-        } else {
-          //New Object
-          const obj = {
-            name: loacal,
-            data: [{ date: month, value: 1 }],
-          };
-          chart_data.push(obj);
-        }
-      }
-    });
-    all_data.value = chart_data;
+
+    const line_data = setCountData(data, minimumDate);
+    const pie_data = setPieType(data, minimumDate);
+    line_chart_data.value = line_data;
+    pie_chart_data.value = pie_data;
   } catch (error) {
     alert(error);
   }

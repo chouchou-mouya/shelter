@@ -1,5 +1,8 @@
 <template>
   <div class="landing">
+    <Popup v-model="popup_status">
+      <Case :data="detail_item"></Case>
+    </Popup>
     <div class="landing-top">
       <div class="landing-top-contain">
         <div class="slogan">
@@ -55,7 +58,12 @@
         v-if="view_data.length !== 0"
         class="glo-contain landing-contain-box"
       >
-        <CaseItem v-for="(res, index) in view_data" :key="index" :data="res">
+        <CaseItem
+          v-for="(res, index) in view_data"
+          :key="index"
+          :data="res"
+          @click="openDetail(res)"
+        >
         </CaseItem>
       </div>
       <div ref="case_end">
@@ -89,7 +97,13 @@
       box-sizing: border-box;
       border-radius: 30px;
       height: calc(100vh - 16%);
-      background: url(../assets/images/bg3.png) no-repeat center center;
+      background-image: url(../assets/images/bg3.png);
+      background-repeat: no-repeat;
+      background-position: center center;
+      // background: url(../assets/images/bg3.png) no-repeat center center;
+      @include phone() {
+        background-position: 80% 75%;
+      }
     }
   }
   &-top-contain {
@@ -171,6 +185,9 @@
         background: transparent;
       }
     }
+    @include mini() {
+      width: 80%;
+    }
   }
   &-contain {
     background: #f2f2f2;
@@ -192,6 +209,9 @@
         text-underline-offset: 10px;
         text-decoration-thickness: 3px;
         color: var(--strong-color);
+        @include mini() {
+          text-underline-offset: 5px;
+        }
       }
     }
     p {
@@ -261,15 +281,18 @@
 import { inject, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useWindowSize } from "@vueuse/core";
 import { srollTo } from "@/utils/utils.js";
+import { area } from "@/utils/list.js";
 import CaseItem from "@/components/CaseItem.vue";
 import LoadingItem from "@/components/element/LoadingItem.vue";
-import { area } from "@/utils/list.js";
+import Popup from "@/components/element/Popup.vue";
+import Case from "@/components/Case.vue";
 const { width } = useWindowSize();
 // import { inject } from "vue";
 // import moment from "moment";
 
 const $axios = inject("$axios");
 const case_end = ref(null);
+const popup_status = ref(false);
 const landing_search_box = ref(null);
 const init_data = {
   count: 8 * 3,
@@ -323,7 +346,7 @@ const setSearchValue = ({ obj }) => {
   return res;
 };
 const is_view = ref(false);
-
+const detail_item = ref(null);
 const launch = async () => {
   //init
   btn_loading.value = true;
@@ -372,6 +395,16 @@ const setLazyLoading = () => {
   });
   observer.observe(case_end.value);
 };
+const openDetail = (the_item) => {
+  console.log(the_item);
+  popup_status.value = true;
+  detail_item.value = the_item;
+};
+watch(popup_status, (v) => {
+  if (v == false) {
+    detail_item.value = null;
+  }
+});
 
 watch(width, (v) => {
   if (v <= 580) {

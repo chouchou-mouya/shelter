@@ -22,7 +22,13 @@ const area=[
   { label: "金門縣", value: 22 },
   { label: "連江縣", value: 23 },
 ]
+const sex=[
+  { label: "公", value: 'M' },
+  { label: "母", value: 'F' },
+  { label: "未知", value: 'N' },
+]
 
 export{
-  area
+  area,
+  sex,
 }
