@@ -141,6 +141,8 @@ const setID = computed(() => {
   return `pie-chart_${the_item}_${random}`;
 });
 const legend = (dom, width, svg) => {
+  const y_margin = 22;
+  const x_padding = 15;
   const legend_box = d3
     .select(dom)
     .select(".legends")
@@ -148,6 +150,22 @@ const legend = (dom, width, svg) => {
     .attr("width", width)
     .attr("height", 50)
     .attr("transform", `translate(10,0)`);
+  legend_box
+    .selectAll("g.legend")
+    .data(props.stack_key)
+    .enter()
+    .append("g")
+    .attr("class", "legend");
+
+  legend_box
+    .selectAll("g")
+    .append("circle")
+    .attr("cx", () => r)
+    .attr("cy", (_, i) => i * y_margin)
+    .attr("r", r)
+    .style("fill", (d) => setDisableColor(d, "circle"))
+    .attr("transform", `translate(0,${init.padding_top})`);
+
 };
 onMounted(() => {
   init.width =
