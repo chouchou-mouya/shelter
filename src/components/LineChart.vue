@@ -366,7 +366,9 @@ const legend = (dom, width, svg) => {
       chart_data.value = setChartData(new_data);
       draw({ dom: "#chart-line", svg: svg });
     });
-};
+
+
+  };
 onMounted(() => {
   init.width = chart_box.value.clientWidth;
   chart_data.value = setChartData(props.raw_data);

@@ -1,4 +1,4 @@
-const area=[
+const area = [
   { label: "台北市", value: 2 },
   { label: "新北市", value: 3 },
   { label: "基隆市", value: 4 },
@@ -21,14 +21,23 @@ const area=[
   { label: "澎湖縣", value: 21 },
   { label: "金門縣", value: 22 },
   { label: "連江縣", value: 23 },
-]
-const sex=[
-  { label: "公", value: 'M' },
-  { label: "母", value: 'F' },
-  { label: "未知", value: 'N' },
-]
+];
+const sex = [
+  { label: "公", value: "M" },
+  { label: "母", value: "F" },
+  { label: "未知", value: "N" },
+];
 
-export{
-  area,
-  sex,
-}
+const age = [
+  { label: "成年", value: "ADULT" },
+  { label: "幼齡", value: "CHILD" },
+  { label: "不確定", value: "" },
+];
+
+const type = [
+  { label: "貓", value: "貓" },
+  { label: "狗", value: "狗" },
+  { label: "其他", value: "其他" },
+];
+
+export { area, sex, age, type };

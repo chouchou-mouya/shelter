@@ -31,19 +31,19 @@
         </div>
         <div class="pie-chart">
           <PieChart
-            v-if="pie_chart_data.length !== 0"
-            :raw_data="pie_chart_data"
-            :stack_key="pie_chart_data.map(el=>el.name)"
+            v-if="pie_chart_sex.length !== 0"
+            :raw_data="pie_chart_sex"
+            :stack_key="pie_chart_sex.map((el) => el.name)"
           ></PieChart>
           <PieChart
-            v-if="pie_chart_data.length !== 0"
-            :raw_data="pie_chart_data"
-            :stack_key="pie_chart_data.map(el=>el.name)"
+            v-if="pie_chart_age.length !== 0"
+            :raw_data="pie_chart_age"
+            :stack_key="pie_chart_age.map((el) => el.name)"
           ></PieChart>
           <PieChart
-            v-if="pie_chart_data.length !== 0"
-            :raw_data="pie_chart_data"
-            :stack_key="pie_chart_data.map(el=>el.name)"
+            v-if="pie_chart_type.length !== 0"
+            :raw_data="pie_chart_type"
+            :stack_key="pie_chart_type.map((el) => el.name)"
           ></PieChart>
         </div>
       </div>
@@ -70,11 +70,11 @@
       }
     }
   }
-  .describe-data{
+  .describe-data {
     margin: 10px 0;
-    &-item{
-      display:flex ;
-      p{
+    &-item {
+      display: flex;
+      p {
         margin-left: 20px;
         font-weight: bold;
       }
@@ -91,7 +91,7 @@
     padding: 30px;
     border-radius: 10px;
   }
-  .pie-chart{
+  .pie-chart {
     display: flex;
     // width: 100%;
   }
@@ -117,7 +117,7 @@
 import { computed, inject, onMounted, reactive, ref } from "vue";
 import moment from "moment";
 import LineChart from "@/components/LineChart.vue";
-import { area, sex } from "@/utils/list.js";
+import { area, sex, age, type } from "@/utils/list.js";
 import LoadingItem from "@/components/element/LoadingItem.vue";
 import PieChart from "@/components/PieChart.vue";
 export default {
@@ -127,7 +127,9 @@ export default {
 <script setup>
 const $axios = inject("$axios");
 const line_chart_data = ref([]);
-const pie_chart_data = ref([]);
+const pie_chart_age = ref([]);
+const pie_chart_sex = ref([]);
+const pie_chart_type = ref([]);
 const page_loading = ref(false);
 const describe_data = reactive({
   total: 0,
@@ -200,18 +202,19 @@ const setCountData = (data) => {
   });
   return chart_data;
 };
-const setPieType = (data) => {
+const setPieType = (data, key, list) => {
   const chart_data = [];
   data.forEach((element) => {
-    const { animal_sex } = element;
-    const { label: the_sex } = sex.filter((a) => a.value == animal_sex)[0];
-    const index = chart_data.findIndex((d) => d.name == the_sex);
+    const item = element[key];
+    // const { animal_sex } = element;
+    const { label: the_item } = list.filter((a) => a.value == item)[0];
+    const index = chart_data.findIndex((d) => d.name == the_item);
     if (index != -1) {
       chart_data[index]["data"] = chart_data[index]["data"] + 1;
     } else {
       //New Object
       const obj = {
-        name: the_sex,
+        name: the_item,
         data: 1,
       };
       chart_data.push(obj);
@@ -246,9 +249,14 @@ const getData = async () => {
     describe_data.total = data.length;
 
     const line_data = setCountData(data);
-    const pie_data = setPieType(data);
+    const pie_data_sex = setPieType(data, "animal_sex", sex);
+    const pie_data_age = setPieType(data, "animal_age", age);
+    const pie_data_type = setPieType(data, "animal_kind", type);
+    
     line_chart_data.value = line_data;
-    pie_chart_data.value = pie_data;
+    pie_chart_sex.value = pie_data_sex;
+    pie_chart_age.value = pie_data_age;
+    pie_chart_type.value = pie_data_type;
   } catch (error) {
     alert(error);
   }
