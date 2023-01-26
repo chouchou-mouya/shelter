@@ -13,11 +13,6 @@
 </template>
 
 <style lang="scss">
-.chart_top {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 12px;
-}
 #chart-line {
   position: relative;
   display: flex;
