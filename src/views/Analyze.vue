@@ -30,21 +30,30 @@
           ></LineChart>
         </div>
         <div class="pie-chart">
-          <PieChart
-            v-if="pie_chart_sex.length !== 0"
-            :raw_data="pie_chart_sex"
-            :stack_key="pie_chart_sex.map((el) => el.name)"
-          ></PieChart>
-          <PieChart
-            v-if="pie_chart_age.length !== 0"
-            :raw_data="pie_chart_age"
-            :stack_key="pie_chart_age.map((el) => el.name)"
-          ></PieChart>
-          <PieChart
-            v-if="pie_chart_type.length !== 0"
-            :raw_data="pie_chart_type"
-            :stack_key="pie_chart_type.map((el) => el.name)"
-          ></PieChart>
+          <div>
+            <h1>性別比</h1>
+            <PieChart
+              v-if="pie_chart_sex.length !== 0"
+              :raw_data="pie_chart_sex"
+              :stack_key="pie_chart_sex.map((el) => el.name)"
+            ></PieChart>
+          </div>
+          <div>
+            <h1>年齡比</h1>
+            <PieChart
+              v-if="pie_chart_age.length !== 0"
+              :raw_data="pie_chart_age"
+              :stack_key="pie_chart_age.map((el) => el.name)"
+            ></PieChart>
+          </div>
+          <div>
+            <h1>總類比</h1>
+            <PieChart
+              v-if="pie_chart_type.length !== 0"
+              :raw_data="pie_chart_type"
+              :stack_key="pie_chart_type.map((el) => el.name)"
+            ></PieChart>
+          </div>
         </div>
       </div>
     </Transition>
@@ -80,12 +89,15 @@
       }
     }
   }
-  .bar-chart {
+  .bar-chart,.pie-chart{
     h1 {
       font-weight: bold;
       font-size: 20px;
       // color: var(--primary-color);
     }
+  }
+  .bar-chart {
+
     width: 100%;
     background: #fff;
     padding: 30px;
@@ -93,6 +105,10 @@
   }
   .pie-chart {
     display: flex;
+    justify-content: center;
+    >div{
+      width: 100%;
+    }
     // width: 100%;
   }
   .side-up-enter-active,
@@ -252,7 +268,7 @@ const getData = async () => {
     const pie_data_sex = setPieType(data, "animal_sex", sex);
     const pie_data_age = setPieType(data, "animal_age", age);
     const pie_data_type = setPieType(data, "animal_kind", type);
-    
+
     line_chart_data.value = line_data;
     pie_chart_sex.value = pie_data_sex;
     pie_chart_age.value = pie_data_age;

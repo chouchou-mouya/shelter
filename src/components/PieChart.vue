@@ -11,17 +11,9 @@
 .chart-pie {
   position: relative;
   // display: flex;
-  .chart {
-  }
   .legends {
-    .legend {
-      cursor: pointer;
-      font-size: 13px;
-      p {
-        width: 30px;
-        height: 30px;
-      }
-    }
+    cursor: pointer;
+    font-size: 13px;
   }
 }
 </style>
@@ -32,10 +24,10 @@ export default {
 </script>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted,createVNode,render, reactive, ref } from "vue";
+import Toolbox from "@/components/ToolBox.vue";
 import "core-js/actual";
 import * as d3 from "d3";
-import { transition } from "d3-transition";
 const props = defineProps({
   raw_data: Array,
   stack_key: Array,
@@ -43,7 +35,7 @@ const props = defineProps({
 
 const init = reactive({
   width: 300,
-  height: 400,
+  height: 300,
   padding_top: 20,
   padding_bottom: 20,
   padding_right: 20,
@@ -109,29 +101,56 @@ const draw = ({ dom, svg }) => {
   const view_heigh = init.height - init.padding_bottom - init.padding_top;
   const view_width = svg_width - init.padding_right - init.padding_left;
   const pieData = d3.pie().value((d) => d.data)(chart_data.value);
-  console.log(pieData);
   const arc = d3.arc().innerRadius(30).outerRadius(100);
   const arcGroup = svg
     .select(".pie_group")
     .attr("transform", `translate(${view_width / 2}, ${view_heigh / 2})`);
-
+  const container = document.createElement("div");
+  let node = document.querySelector(dom).appendChild(container);
+  let vnode;
   arcGroup
     .selectAll("path")
     .data(pieData)
     .join("path")
-    .on("mousemove", function (_, the_item) {
-      const name = the_item.data.name;
-      console.log(name);
-      d3.selectAll(`.pie[name='${name}']`).style("fill", "#000");
+    .on("mousemove", function (_,d) {
+      const the_item={
+        label:d.data.name,
+        value:d.data.data
+      }
+      vnode = createVNode(
+          Toolbox,
+          {
+            data: [the_item],
+            position: {
+              x: 0,
+              y: 0,
+            },
+            color: z,
+          },
+          null
+        );
+        // vnode.appContext = { ...appContext };
+        render(vnode, node);
+
+
+      d3.select(this)
+        .transition()
+        .duration("50")
+        .attr("opacity", ".75")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", "2px");
     })
-    .on("mouseout", function (_, the_item) {
-      const name = the_item.data.name;
-      d3.selectAll(`.pie[name='${name}']`).style("fill", z(name));
+    .on("mouseout", function () {
+      render(null, node);
+      d3.select(this)
+        .transition()
+        .duration("50")
+        .attr("opacity", "1")
+        .attr("stroke-width", "0");
     })
     .attr("name", (d) => d.data["name"])
     .attr("class", "pie")
     .attr("fill", (d) => {
-      console.log(d.data.name);
       return z(d.data.name);
     })
     .attr("d", arc);
@@ -206,11 +225,11 @@ const legend = (dom, width, svg) => {
         );
       }
       chart_data.value = new_data;
-      console.log(chart_data.value);
       draw({ dom: `#${setID.value}`, svg: svg });
     });
 };
 onMounted(() => {
+  console.log(chart_box.value.clientWidth)
   init.width =
     chart_box.value.clientWidth == 0 ? init.width : chart_box.value.clientWidth;
   chart_data.value = props.raw_data;

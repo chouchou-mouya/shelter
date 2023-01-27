@@ -5,6 +5,9 @@
       <div>全選</div>
       <div>全不選</div>
     </div> -->
+    <!-- <div class="toolbox">
+
+    </div> -->
     <div id="chart-line">
       <div class="chart"></div>
       <div ref="legends_box" class="legends"></div>
@@ -31,11 +34,21 @@
 }
 </style>
 <script setup>
-import { computed, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  createApp,
+  createVNode,
+  getCurrentInstance,
+  onMounted,
+  reactive,
+  ref,
+  render,
+} from "vue";
 import "core-js/actual";
 // import { useWindowSize } from "@vueuse/core";
 import * as d3 from "d3";
 import { transition } from "d3-transition";
+import Toolbox from "@/components/ToolBox.vue";
 // const { width } = useWindowSize();
 const props = defineProps({
   raw_data: Array,
@@ -123,13 +136,14 @@ const initSvg = ({ dom }) => {
     .attr("height", init.height)
     .append("g")
     .attr("transform", `translate(${init.padding_left},${init.padding_top})`);
+
   //data lines
   svg.append("g").attr("class", "lines");
   //xAxis
   svg.append("g").attr("class", "Xaxis");
   //yAxis
   svg.append("g").attr("class", "Yaxis");
-  // console.log(svg, d3.select(dom).select(".chart").select("g"));
+
   return svg;
 };
 
@@ -215,7 +229,7 @@ const draw = ({ dom, svg }) => {
     .attr("transform", `translate(${x_width / 2},0)`)
     .style("stroke", "black")
     .style("stroke-width", 2)
-    .style("stroke-dasharray", ("3, 3"))
+    .style("stroke-dasharray", "3, 3");
 
   svg.append("g").attr("class", "point_g");
 
@@ -242,7 +256,9 @@ const draw = ({ dom, svg }) => {
     .call(d3.axisLeft(y));
 
   const outter_svg = d3.select(dom).select(".chart").select("svg");
-
+  const container = document.createElement("div");
+  let node = document.querySelector(dom).appendChild(container);
+  let vnode;
   outter_svg
     .on("mousemove", function (mouse) {
       var eachBand = x.step();
@@ -255,6 +271,22 @@ const draw = ({ dom, svg }) => {
       const index = Math.round(x_cord / eachBand);
       const val = x.domain()[index];
       if (val) {
+        //set toolbox
+        vnode = createVNode(
+          Toolbox,
+          {
+            data: all_date[val],
+            position: {
+              x: x(val),
+              y: 0,
+            },
+            color: z,
+          },
+          null
+        );
+        // vnode.appContext = { ...appContext };
+        render(vnode, node);
+
         svg
           .select(".index")
           .style("visibility", "visible")
@@ -284,6 +316,15 @@ const draw = ({ dom, svg }) => {
     .on("mouseout", function () {
       show_point.selectAll("circle").style("visibility", "hidden");
       svg.select(".index").style("visibility", "hidden");
+      // render(null, node);
+      // document.body.removeChild(node);
+    });
+  d3.select(dom)
+    .select(".chart")
+    .on("mouseleave", function () {
+      if (node) {
+        render(null, node);
+      }
     });
   lines_point_group.exit().remove();
 };
@@ -366,9 +407,7 @@ const legend = (dom, width, svg) => {
       chart_data.value = setChartData(new_data);
       draw({ dom: "#chart-line", svg: svg });
     });
-
-
-  };
+};
 onMounted(() => {
   init.width = chart_box.value.clientWidth;
   chart_data.value = setChartData(props.raw_data);
