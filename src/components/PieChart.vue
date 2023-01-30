@@ -24,7 +24,7 @@ export default {
 </script>
 
 <script setup>
-import { computed, onMounted,createVNode,render, reactive, ref } from "vue";
+import { computed, onMounted, createVNode, render, reactive, ref } from "vue";
 import Toolbox from "@/components/ToolBox.vue";
 import "core-js/actual";
 import * as d3 from "d3";
@@ -45,31 +45,17 @@ const chart_box = ref(null);
 const legends_box = ref(null);
 const disable_legend = ref([]);
 const chart_data = ref([]);
-const z = d3.scaleOrdinal().range([
-  d3.hsl(221, 0.96, 0.68),
-  // d3.hsl(207, 0.74, 0.6),
-  // d3.hsl(203, 0.72, 0.63),
-  // d3.hsl(196, 0.73, 0.64),
-  // d3.hsl(189, 0.48, 0.61),
-  // d3.hsl(188, 0.82, 0.56),
-  // d3.hsl(177, 0.48, 0.61),
-  // d3.hsl(159, 0.47, 0.56),
-  // d3.hsl(97, 0.51, 0.7),
-  d3.hsl(68, 0.75, 0.68),
-  // d3.hsl(48, 0.94, 0.68),
-  // d3.hsl(36, 0.99, 0.65),
-  // d3.hsl(22, 0.84, 0.7),
-  // d3.hsl(10, 0.75, 0.69),
-  // d3.hsl(3, 0.75, 0.68),
-  d3.hsl(0, 1, 0.74),
-  // d3.hsl(342, 0.59, 0.64),
-  // d3.hsl(322, 0.47, 0.6),
-  // d3.hsl(290, 0.38, 0.55),
-  d3.hsl(247, 0.67, 0.72),
-  d3.hsl(235, 0.59, 0.66),
-  d3.hsl(232, 0.59, 0.62),
-  d3.hsl(220, 0.52, 0.62),
-]);
+const z = d3
+  .scaleOrdinal()
+  .range([
+    d3.hsl(221, 0.96, 0.68),
+    d3.hsl(68, 0.75, 0.68),
+    d3.hsl(0, 1, 0.74),
+    d3.hsl(247, 0.67, 0.72),
+    d3.hsl(235, 0.59, 0.66),
+    d3.hsl(232, 0.59, 0.62),
+    d3.hsl(220, 0.52, 0.62),
+  ]);
 // set color
 z.domain(props.stack_key);
 
@@ -112,26 +98,25 @@ const draw = ({ dom, svg }) => {
     .selectAll("path")
     .data(pieData)
     .join("path")
-    .on("mousemove", function (_,d) {
-      const the_item={
-        label:d.data.name,
-        value:d.data.data
-      }
+    .on("mousemove", function (e, d) {
+      const the_item = {
+        label: d.data.name,
+        value: d.data.data,
+      };
       vnode = createVNode(
-          Toolbox,
-          {
-            data: [the_item],
-            position: {
-              x: 0,
-              y: 0,
-            },
-            color: z,
+        Toolbox,
+        {
+          data: [the_item],
+          position: {
+            x: e.layerX,
+            y: e.layerY,
           },
-          null
-        );
-        // vnode.appContext = { ...appContext };
-        render(vnode, node);
-
+          color: z,
+        },
+        null
+      );
+      // vnode.appContext = { ...appContext };
+      render(vnode, node);
 
       d3.select(this)
         .transition()
@@ -229,7 +214,7 @@ const legend = (dom, width, svg) => {
     });
 };
 onMounted(() => {
-  console.log(chart_box.value.clientWidth)
+  console.log(chart_box.value.clientWidth);
   init.width =
     chart_box.value.clientWidth == 0 ? init.width : chart_box.value.clientWidth;
   chart_data.value = props.raw_data;

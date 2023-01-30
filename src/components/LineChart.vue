@@ -268,7 +268,7 @@ const draw = ({ dom, svg }) => {
       // const x = d3.pointer(mouse)[0] - init.padding_left;
       // const [x_cord,y_cord] = d3.pointer(mouse);
       // find closest data point
-      const index = Math.round(x_cord / eachBand);
+      const index = Math.floor(x_cord / eachBand);
       const val = x.domain()[index];
       if (val) {
         //set toolbox
@@ -277,7 +277,7 @@ const draw = ({ dom, svg }) => {
           {
             data: all_date[val],
             position: {
-              x: x(val),
+              x: x(val)+(eachBand/1.5),
               y: 0,
             },
             color: z,
@@ -286,7 +286,6 @@ const draw = ({ dom, svg }) => {
         );
         // vnode.appContext = { ...appContext };
         render(vnode, node);
-
         svg
           .select(".index")
           .style("visibility", "visible")
