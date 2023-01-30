@@ -30,7 +30,7 @@
           ></LineChart>
         </div>
         <div class="pie-chart">
-          <div>
+          <div class="pie-chart-box">
             <h1>性別比</h1>
             <PieChart
               v-if="pie_chart_sex.length !== 0"
@@ -38,7 +38,7 @@
               :stack_key="pie_chart_sex.map((el) => el.name)"
             ></PieChart>
           </div>
-          <div>
+          <div  class="pie-chart-box">
             <h1>年齡比</h1>
             <PieChart
               v-if="pie_chart_age.length !== 0"
@@ -46,7 +46,7 @@
               :stack_key="pie_chart_age.map((el) => el.name)"
             ></PieChart>
           </div>
-          <div>
+          <div  class="pie-chart-box">
             <h1>總類比</h1>
             <PieChart
               v-if="pie_chart_type.length !== 0"
@@ -66,6 +66,9 @@
   z-index: 1;
   padding: 50px 30px;
   min-height: 100vh;
+  @include phone(){
+    padding: 50px 10px;
+  }
   .date-picker {
     position: relative;
     left: 50%;
@@ -97,7 +100,6 @@
     }
   }
   .bar-chart {
-
     width: 100%;
     background: #fff;
     padding: 30px;
@@ -105,9 +107,17 @@
   }
   .pie-chart {
     display: flex;
-    justify-content: center;
-    >div{
-      width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    .pie-chart-box{
+      flex: 1;
+      margin: 10px 10px;
+      min-width: 300px;
+      max-width: 100%;
+      background: #fff;
+      padding:15px 10px 10px;
+      border-radius: 10px;
     }
     // width: 100%;
   }

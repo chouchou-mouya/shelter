@@ -10,6 +10,9 @@
 <style lang="scss" scoped>
 .chart-pie {
   position: relative;
+  .chart{
+    text-align: center;
+  }
   // display: flex;
   .legends {
     cursor: pointer;
