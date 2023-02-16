@@ -1,5 +1,6 @@
 <template>
-  <div class="analyze">
+  <div class="analyze" >
+    <!-- v-resize="setDimensions" -->
     <div class="date-picker">
       <el-date-picker
         v-model="date_range"
@@ -27,6 +28,7 @@
             v-if="line_chart_data.length !== 0"
             :raw_data="line_chart_data"
             :stack_key="Object.keys(area_key)"
+            :key="immediate_width"
           ></LineChart>
         </div>
         <div class="pie-chart">
@@ -104,6 +106,9 @@
     background: #fff;
     padding: 30px;
     border-radius: 10px;
+    @include mini(){
+      padding: 20px 10px;
+    }
   }
   .pie-chart {
     display: flex;
@@ -118,6 +123,9 @@
       background: #fff;
       padding:15px 10px 10px;
       border-radius: 10px;
+      @include mini(){
+        margin:10px 0;
+      }
     }
     // width: 100%;
   }
@@ -146,6 +154,7 @@ import LineChart from "@/components/LineChart.vue";
 import { area, sex, age, type } from "@/utils/list.js";
 import LoadingItem from "@/components/element/LoadingItem.vue";
 import PieChart from "@/components/PieChart.vue";
+
 export default {
   name: "analyze-item",
 };
@@ -160,6 +169,7 @@ const page_loading = ref(false);
 const describe_data = reactive({
   total: 0,
 });
+const immediate_width=ref(null);
 const area_key = computed(() => {
   return area
     .map((el) => el.label)
@@ -297,6 +307,9 @@ const changeDate = (date) => {
     getData();
   }
 };
+const setDimensions=({ width })=>{
+  immediate_width.value=width
+}
 onMounted(() => {
   getData();
 });

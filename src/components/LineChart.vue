@@ -1,13 +1,5 @@
 <template>
-  <!-- {{ props.raw_data[0] }} -->
-  <div ref="chart_box">
-    <!-- <div class="chart_top">
-      <div>全選</div>
-      <div>全不選</div>
-    </div> -->
-    <!-- <div class="toolbox">
-
-    </div> -->
+  <div ref="chart_box" v-resize="setDimensions">
     <div id="chart-line">
       <div class="chart"></div>
       <div ref="legends_box" class="legends"></div>
@@ -19,6 +11,9 @@
 #chart-line {
   position: relative;
   display: flex;
+  @include mini() {
+    display: block;
+  }
   .legends {
     width: 120px;
     text-align: right;
@@ -43,6 +38,7 @@ import {
   reactive,
   ref,
   render,
+  watch,
 } from "vue";
 import "core-js/actual";
 // import { useWindowSize } from "@vueuse/core";
@@ -67,6 +63,8 @@ const chart_data = ref([]);
 const chart_box = ref(null);
 const legends_box = ref(null);
 const disable_legend = ref([]);
+const immediate_width=ref(null);
+const mini_size=580-100
 const setChartData = (data) => {
   const newData = data.map((d) => {
     let { data, name } = d;
@@ -127,7 +125,6 @@ const z = d3
 
 const initSvg = ({ dom }) => {
   const { svg_width } = getSVGWidth.value;
-
   const svg = d3
     .select(dom)
     .select(".chart")
@@ -148,9 +145,14 @@ const initSvg = ({ dom }) => {
 };
 
 const getSVGWidth = computed(() => {
-  const legend_box_width = legends_box.value.clientWidth;
-  const svg_width = init.width - legend_box_width;
-  return { svg_width, legend_box_width };
+  if (init.width > mini_size) {
+    const legend_box_width = legends_box.value.clientWidth;
+    const svg_width = init.width - legend_box_width;
+    return { svg_width, legend_box_width };
+  } else {
+    const svg_width = immediate_width.value;
+    return { svg_width };
+  }
 });
 
 const draw = ({ dom, svg }) => {
@@ -265,10 +267,12 @@ const draw = ({ dom, svg }) => {
       // - (init.padding_left + init.padding_right)
       const x_cord =
         d3.pointer(mouse)[0] - (init.padding_left + init.padding_right);
+
       // const x = d3.pointer(mouse)[0] - init.padding_left;
       // const [x_cord,y_cord] = d3.pointer(mouse);
       // find closest data point
       const index = Math.floor(x_cord / eachBand);
+      // console.log("x_cord / eachBand",x_cord / eachBand)
       const val = x.domain()[index];
       if (val) {
         //set toolbox
@@ -277,14 +281,13 @@ const draw = ({ dom, svg }) => {
           {
             data: all_date[val],
             position: {
-              x: x(val)+(eachBand/1.5),
+              x: x(val) + eachBand / 1.5,
               y: 0,
             },
             color: z,
           },
           null
         );
-        // vnode.appContext = { ...appContext };
         render(vnode, node);
         svg
           .select(".index")
@@ -327,6 +330,7 @@ const draw = ({ dom, svg }) => {
     });
   lines_point_group.exit().remove();
 };
+
 const setDisableColor = (d, type) => {
   if (disable_legend.value.includes(d)) {
     return "#ccc";
@@ -407,7 +411,18 @@ const legend = (dom, width, svg) => {
       draw({ dom: "#chart-line", svg: svg });
     });
 };
+const setDimensions = ({ width }) => {
+  console.log(width)
+  immediate_width.value=width-50
+  d3.select("#chart-line").select(".chart").select("svg").remove();
+  init.width = width - 100;
+  
+  const svg = initSvg({ dom: "#chart-line" });
+  draw({ dom: "#chart-line", svg: svg });
+};
+
 onMounted(() => {
+  immediate_width.value= chart_box.value.clientWidth
   init.width = chart_box.value.clientWidth;
   chart_data.value = setChartData(props.raw_data);
   const svg = initSvg({ dom: "#chart-line" });

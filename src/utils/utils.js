@@ -61,10 +61,16 @@ const onSizeChange = () => {
   });
 };
 
-const getWindowWidth = () => {
-  onSizeChange();
-  window.addEventListener("resize", onSizeChange);
-};
+const getWindowWidth ={
+  mounted(el, binding){
+    const onResizeCallback = binding.value;
+    window.addEventListener('resize', () => {
+      const width = document.documentElement.clientWidth;
+      const height = document.documentElement.clientHeight;
+      onResizeCallback({ width, height });
+    })
+  }
+}
 
 const removeListen = (type) => {
   window.removeEventListener(type, onSizeChange);
