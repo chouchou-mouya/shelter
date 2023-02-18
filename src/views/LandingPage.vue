@@ -187,6 +187,7 @@
     }
     @include mini() {
       width: 80%;
+      padding-top: 30%;
     }
   }
   &-contain {
@@ -218,6 +219,10 @@
       margin-top: 25px;
       font-size: 13px;
       line-height: 20px;
+      @include mini() {
+        background: rgba(255,255,255,0.5);
+        border-radius: 10px;
+    }
     }
   }
   .search-btn {

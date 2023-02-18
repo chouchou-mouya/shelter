@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <div class="logo">LOGO</div>
+    <div class="logo"><img @click="goRouter(heads[0])" src="../assets/images/logo.png" /></div>
     <nav>
       <div
         v-for="head in heads"
@@ -27,6 +27,10 @@
   .logo {
     padding: 20px 50px;
     font-family: "Nunito", sans-serif;
+    img{
+      cursor: pointer;
+      width: 35px;
+    }
     @include pad() {
       padding: 20px 20px;
     }
@@ -78,7 +82,10 @@ const goRouter = ({ value }) => {
     name: value,
   });
 };
+
+
 onBeforeRouteUpdate((to) => {
   is_route.value = to.name;
 });
+
 </script>
